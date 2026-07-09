@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
             timeToNextLevel: "Čas do ďalšej úrovne:",
             deathBurned: "Naozaj? Prečo by si to urobil? Urobila ti tá žabka niečo, že si ju musel hodiť do pece a nechať ju zhorieť na popol? Ty vrah!",
             deathWindowThrown: "Naozaj? Prečo si to urobil? Viem, že žabka potrebuje vzduch na dýchanie, ale nemusíš ju vyhadzovať z okna... Ty vrah!",
-            deathSoapEaten: "Naozal? Prečo si tej žabe dal mydlo? Keď tá žaba otvorí ústa, neznamená to, že je máš nakŕmiť mydlom... Ty vrah!",
+            deathSoapEaten: "Naozal? Prečo si tej žabe dal mydlo? Keď tá žaba otvorí ústa, neznamená to, že ju máš nakŕmiť mydlom... Ty vrah!",
             cleanPoop: "Vyčistite výkaly, keď sa objavia. Kliknite na výkaly, aby ste ich odstránili. V kúpeľni pretiahnite mydlo po žabke, aby ste ju očistili.",
         }
     };
