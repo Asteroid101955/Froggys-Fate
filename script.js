@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
             timeToNextLevel: "Time to next level:",
             deathBurned: "Really? Why would you do that? Did that frog do anything to you for you to throw it in the furnace and let it burn to ash? You murderer!",
             deathWindowThrown: "Really? I know that the frog needs air to breathe, but you do not need to throw it out of the window... You murderer!",
-            deathSoapEaten: "Really? Why did you fed the frog a bar of soap? When the forg opens its mouth, it does not mean you should feed it soap... You murderer!",
+            deathSoapEaten: "Really? Why did you fed the frog a bar of soap? When the frog opens its mouth, it does not mean you should feed it soap... You murderer!",
             cleanPoop: "Clean up poop when it appears. Click on the poop to remove it. In the bathroom, drag the soap over your froggy to clean it.",
         },
         sk: {
