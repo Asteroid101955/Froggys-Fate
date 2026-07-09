@@ -1,0 +1,844 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    padding: 20px 0;
+    background-color: white; /* Changed to white */
+    color: #333;
+    box-sizing: border-box;
+}
+
+.game-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    margin: 0 auto;
+    width: fit-content;
+    max-width: calc(100vw - 40px);
+    box-sizing: border-box;
+    border: 2px solid #556B2F; /* Dark olive green border */
+    border-radius: 10px;
+    background-color: #90EE90; /* Light green for game area */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#win-screen {
+    position: relative;
+}
+
+#win-credits {
+    position: absolute;
+    right: 12px;
+    bottom: 10px;
+    text-align: right;
+    font-size: 0.75em;
+    line-height: 1.25;
+    color: #7f7f7f;
+    font-weight: 500;
+    max-width: 280px;
+}
+
+#win-credits > div + div {
+    margin-top: 2px;
+}
+
+#global-credits {
+    position: fixed;
+    right: 12px;
+    bottom: 10px;
+    text-align: right;
+    font-size: 0.75em;
+    line-height: 1.25;
+    color: #9a9a9a;
+    font-weight: 500;
+    max-width: 320px;
+    z-index: 2000;
+    pointer-events: none;
+}
+
+#global-credits > div + div {
+    margin-top: 2px;
+}
+
+.game-screen.hidden {
+    display: none;
+}
+
+.hidden {
+    display: none !important;
+}
+
+h1 {
+    color: #228B22; /* Forest green for title */
+    margin-bottom: 20px;
+}
+
+#stats {
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    text-align: center;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.stat-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Increased space between label and bar */
+}
+
+.stat-label {
+    width: 80px; /* Fixed width for labels */
+    text-align: right;
+    font-weight: bold;
+}
+
+.stat-bar {
+    width: 150px;
+    height: 20px;
+    background-color: #ccc;
+    border: 1px solid #999;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+    display: flex; /* Use flexbox to center content */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.percentage-value {
+    position: absolute;
+    color: black; /* Or a contrasting color */
+    font-weight: bold;
+    z-index: 1; /* Ensure text is above the fill */
+}
+
+.stat-fill {
+    height: 100%;
+    width: 100%; /* Will be controlled by JS for vertical filling */
+    background-color: #32CD32; /* Lime green for fill */
+    transition: width 0.3s ease-out; /* Smooth transition for fill level */
+    position: absolute;
+    bottom: 0; /* Start filling from the bottom */
+    left: 0;
+    transform-origin: bottom; /* Ensure scaling is from the bottom */
+}
+
+/* Specific colors for each stat */
+#hunger-fill {
+    background-color: #FF6347; /* Tomato red for hunger */
+}
+
+#cleanliness-fill {
+    background-color: #1E90FF; /* Dodger blue for cleanliness */
+}
+
+#happiness-fill {
+    background-color: #FFD700; /* Gold for happiness */
+}
+
+#sleep-fill {
+    background-color: #8A2BE2; /* Blue Violet for sleep */
+}
+
+#oxygen-fill {
+    background-color: #00BFFF; /* Deep Sky Blue for oxygen */
+}
+
+#temperature-fill {
+    background-color: #FF4500; /* Orange Red for temperature */
+}
+
+/* Vertical bar specific styles */
+.stat-bar-container.vertical-bar {
+    flex-direction: row; /* Arrange label, percentage, and bar in a row */
+    align-items: center;
+    gap: 5px;
+}
+
+.stat-bar-container.vertical-bar .percentage-value {
+    position: static; /* Remove absolute positioning */
+    margin-right: 5px; /* Space between percentage and bar */
+    font-size: 0.9em; /* Adjust font size if needed */
+}
+
+#vertical-stats-container {
+    position: fixed;
+    right: 20px; /* Distance from the right edge */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Adjust for perfect vertical centering */
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Space between vertical stat bars */
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent background */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 100; /* Ensure it's above other content */
+}
+
+.stat-bar-container.vertical-bar .stat-label {
+    width: auto; /* Allow label to take natural width */
+    text-align: center;
+}
+
+.stat-bar-container.vertical-bar .stat-bar {
+    width: 20px; /* Narrow width for vertical bar */
+    height: 150px; /* Taller height for vertical bar */
+    flex-direction: column-reverse; /* Ensure fill starts from bottom */
+}
+
+.stat-bar-container.vertical-bar .stat-fill {
+    width: 100%; /* Fill full width of the narrow bar */
+    height: 100%; /* Height will be controlled by JS */
+    bottom: 0; /* Start filling from the bottom */
+    left: 0;
+    transform-origin: bottom; /* Ensure scaling is from the bottom */
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background-color: #32CD32; /* Lime green for buttons */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin: 5px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #228B22; /* Darker green on hover */
+}
+
+#frog-container {
+    margin-bottom: 20px;
+    position: relative; /* For positioning eyes */
+    width: 150px; /* Same as frog-image width */
+    height: 150px; /* Same as frog-image height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: grab;
+    transition: transform 0.15s ease, filter 0.15s ease;
+    touch-action: none;
+}
+
+#frog-body {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #556B2F; /* Dark olive green for frog body */
+    position: relative;
+}
+
+#frog-container:active {
+    cursor: grabbing;
+}
+
+#frog-container.frog-picked-up {
+    position: fixed;
+    margin-bottom: 0;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%);
+    z-index: 1001;
+    cursor: grabbing;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.25));
+}
+
+body.frog-dragging {
+    user-select: none;
+    touch-action: none;
+}
+
+body.food-dragging {
+    user-select: none;
+    touch-action: none;
+}
+
+#coin-display {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    z-index: 1200;
+}
+
+#difficulty-display {
+    position: fixed;
+    left: 50%;
+    top: 10px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    z-index: 1200;
+}
+
+#level-display {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    z-index: 1200;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px 0;
+    }
+
+    .game-screen {
+        padding: 14px;
+        width: 100%;
+        max-width: calc(100vw - 20px);
+    }
+
+    #stats {
+        font-size: 1em;
+        gap: 8px;
+    }
+
+    .stat-label {
+        width: 72px;
+    }
+
+    .stat-bar {
+        width: 120px;
+        height: 16px;
+    }
+
+    #frog-container {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 12px;
+    }
+
+    #frog-body {
+        width: 120px;
+        height: 120px;
+    }
+
+    .eye {
+        width: 32px;
+        height: 32px;
+    }
+
+    .pupil {
+        width: 12px;
+        height: 12px;
+    }
+
+    #room-navigation {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px;
+        margin-top: 12px;
+        margin-bottom: 12px;
+    }
+
+    #room-navigation button {
+        padding: 8px 10px;
+        font-size: 1em;
+        margin: 0;
+    }
+
+    #interactive-elements-container {
+        left: 50%;
+        top: auto;
+        bottom: 12px;
+        transform: translateX(-50%);
+        flex-direction: row;
+        gap: 12px;
+        z-index: 1200;
+    }
+
+    #vertical-stats-container {
+        right: 50%;
+        top: 66px;
+        transform: translateX(50%);
+        flex-direction: row;
+        gap: 10px;
+        z-index: 1200;
+    }
+
+    .stat-bar-container.vertical-bar .stat-bar {
+        height: 110px;
+    }
+
+    #coin-display,
+    #difficulty-display,
+    #level-display {
+        padding: 5px 8px;
+        border-radius: 9px;
+        font-size: 0.95em;
+    }
+
+    #global-credits {
+        font-size: 0.7em;
+        max-width: 240px;
+    }
+}
+
+.eye {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    border-radius: 50%;
+    border: 2px solid #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Keep pupil inside eye */
+}
+
+#eye-left {
+    top: 30px;
+    left: 20px;
+}
+
+#eye-right {
+    top: 30px;
+    right: 20px;
+}
+
+.pupil {
+    width: 15px;
+    height: 15px;
+    background-color: black;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s linear; /* Added for smooth movement */
+}
+
+#frog-mouth {
+    position: absolute;
+    bottom: 40px; /* Adjust position as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 5px;
+    background-color: #333; /* Dark color for closed mouth */
+    border-radius: 2px;
+    transition: all 0.2s ease-in-out; /* Smooth transition for opening/closing */
+}
+
+#frog-mouth.mouth-open {
+    width: 60px;
+    height: 20px;
+    background-color: #A0522D; /* Saddle brown for inside mouth */
+    border-radius: 0 0 20px 20px; /* Curved bottom for open mouth */
+}
+
+#food-item {
+    width: 30px;
+    height: 30px;
+    background-color: #FF4500; /* OrangeRed for food */
+    border-radius: 50%;
+    cursor: grab;
+    position: absolute; /* Allow dragging */
+    bottom: 20px; /* Initial position */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10; /* Ensure it's above other elements */
+    touch-action: none;
+}
+
+#soap-item {
+    width: 34px;
+    height: 48px;
+    background:
+        radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.95) 0 10%, transparent 11%),
+        radial-gradient(circle at 65% 35%, rgba(255, 255, 255, 0.85) 0 8%, transparent 9%),
+        linear-gradient(180deg, #f7f4ff 0%, #d7ccff 100%);
+    border: 2px solid #9b8ad6;
+    border-radius: 14px;
+    cursor: grab;
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.55), 0 3px 8px rgba(0, 0, 0, 0.12);
+    touch-action: none;
+}
+
+#bathroom-room {
+    background-color: #e9f7ff;
+}
+
+#bathroom-room h2 {
+    color: #2f6d8a;
+}
+
+
+
+#furnace-item {
+    position: relative;
+    width: 72px;
+    height: 88px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 24%),
+        repeating-linear-gradient(
+            0deg,
+            #707070 0 8px,
+            #626262 8px 16px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.08) 0 8px,
+            rgba(0, 0, 0, 0.08) 8px 16px
+        );
+    border: 4px solid #323232;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 5;
+    box-shadow:
+        inset 0 0 0 2px rgba(255, 255, 255, 0.12),
+        inset 0 -10px 14px rgba(0, 0, 0, 0.25),
+        0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#furnace-item::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 11px;
+    width: 42px;
+    height: 18px;
+    border: 3px solid #2b2b2b;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.15)),
+        #535353;
+    box-shadow:
+        inset 0 0 0 2px rgba(255, 255, 255, 0.08),
+        inset 0 -4px 6px rgba(0, 0, 0, 0.25);
+}
+
+#furnace-item::after {
+    content: "";
+    position: absolute;
+    left: 11px;
+    bottom: 10px;
+    width: 42px;
+    height: 26px;
+    border: 3px solid #2b2b2b;
+    background:
+        radial-gradient(circle at 50% 72%, #ffd36a 0 18%, transparent 19%),
+        radial-gradient(circle at 38% 78%, #ff9c3b 0 24%, transparent 25%),
+        radial-gradient(circle at 63% 78%, #ff6b2f 0 22%, transparent 23%),
+        linear-gradient(180deg, #2b180b 0%, #4b220d 45%, #1a0d06 100%);
+    box-shadow: inset 0 0 10px rgba(255, 140, 0, 0.35);
+}
+
+#furnace-item.furnace-burning {
+    box-shadow:
+        0 0 12px rgba(255, 120, 0, 0.65),
+        0 0 30px rgba(255, 69, 0, 0.45),
+        inset 0 0 0 2px rgba(255, 255, 255, 0.12),
+        inset 0 -10px 14px rgba(0, 0, 0, 0.25);
+}
+
+#furnace-item.furnace-burning::after {
+    height: 34px;
+    background:
+        radial-gradient(circle at 50% 25%, #fff1a8 0 16%, transparent 17%),
+        radial-gradient(circle at 28% 78%, #ffd36a 0 18%, transparent 19%),
+        radial-gradient(circle at 50% 65%, #ff9c3b 0 30%, transparent 31%),
+        radial-gradient(circle at 72% 78%, #ff6b2f 0 22%, transparent 23%),
+        linear-gradient(180deg, #3a1908 0%, #5b250e 45%, #230f07 100%);
+    box-shadow:
+        inset 0 0 14px rgba(255, 140, 0, 0.55),
+        0 0 10px rgba(255, 120, 0, 0.45);
+    animation: furnace-fire-flicker 0.35s infinite alternate;
+}
+
+@keyframes furnace-fire-flicker {
+    from {
+        transform: scaleY(1);
+        filter: brightness(1);
+    }
+    to {
+        transform: scaleY(1.08);
+        filter: brightness(1.18);
+    }
+}
+
+#interactive-elements-container {
+    position: fixed;
+    left: 20px; /* Distance from the left edge */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Adjust for perfect vertical centering */
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Space between interactive elements */
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent background */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 100; /* Ensure it's above other content */
+}
+
+#window-item {
+    width: 58px;
+    height: 78px;
+    background:
+        linear-gradient(90deg, transparent 0 25px, #f5f5f5 25px 33px, transparent 33px 100%),
+        linear-gradient(180deg, transparent 0 35px, #f5f5f5 35px 43px, transparent 43px 100%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.08) 45%, rgba(110, 190, 255, 0.18) 46%, rgba(168, 224, 255, 0.72) 100%);
+    border: 6px solid #d8d8d8;
+    border-radius: 3px;
+    cursor: pointer;
+    z-index: 5;
+    box-shadow:
+        inset 0 0 0 2px #8e8e8e,
+        inset 0 0 0 4px rgba(255, 255, 255, 0.75),
+        0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+#poop-item {
+    width: 30px;
+    height: 30px;
+    background-color: #8B4513; /* SaddleBrown for poop */
+    border-radius: 50%;
+    position: absolute;
+    cursor: pointer;
+    z-index: 5; /* Below food item, above frog */
+    display: none; /* Hidden by default */
+}
+
+#actions {
+    display: flex;
+    gap: 10px;
+}
+
+#room-navigation {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    background-color: #7CFC00; /* Lawn green for navigation background */
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#room-navigation button {
+    background-color: #32CD32; /* Lime green for nav buttons */
+    color: white;
+    border: 1px solid #228B22;
+    padding: 8px 15px;
+    font-size: 1em;
+    border-radius: 5px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#room-navigation button:hover {
+    background-color: #228B22; /* Darker green on hover */
+    transform: translateY(-2px);
+}
+
+.room {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    background-color: #E0FFE0; /* Very light green for room background */
+    border-radius: 10px;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+    min-height: 200px; /* Ensure rooms have a minimum height */
+    box-sizing: border-box; /* Include padding in width/height */
+}
+
+#job-room {
+    background-color: #F0E68C; /* Khaki for job room */
+}
+
+#job-room button {
+    background-color: goldenrod; /* Goldenrod for work button */
+    color: white;
+    border: 1px solid #B8860B;
+}
+
+#job-room button:hover {
+    background-color: #DAA520; /* Darker goldenrod on hover */
+}
+
+.room h2 {
+    color: #228B22;
+    margin-bottom: 15px;
+}
+
+.room button {
+    margin-top: 10px;
+}
+
+.room.hidden {
+    display: none;
+}
+
+/* Death animation styles */
+#frog-body.frog-dead {
+    background-color: #6B5B5B; /* Dull brown/grey */
+    transform: scale(0.9); /* Slightly shrink */
+    transition: all 0.5s ease-in-out;
+}
+
+#frog-body.frog-dead .eye {
+    background-color: #A0A0A0; /* Greyish eyes */
+}
+
+#frog-body.frog-dead .pupil {
+    background-color: #333; /* Darker pupils */
+    width: 10px;
+    height: 10px;
+    transform: translate(-50%, -50%) rotate(45deg); /* Make pupils look like X's */
+    border-radius: 0; /* Square pupils for X effect */
+}
+
+#frog-body.frog-dead #frog-mouth {
+    height: 2px;
+    border-radius: 0;
+    background-color: #333;
+    transform: translateX(-50%) translateY(5px); /* Flat or slightly downturned mouth */
+}
+
+/* Tutorial Screen Styles */
+#tutorial-screen {
+    background-color: #E0FFE0; /* Light green background */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    width: min(760px, calc(100vw - 32px));
+    text-align: center;
+    color: #333;
+    z-index: 1000; /* Ensure it's on top */
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    max-height: none;
+    overflow: visible;
+    align-items: stretch;
+    justify-content: flex-start;
+}
+
+#tutorial-screen h1 {
+    color: #228B22;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+}
+
+#tutorial-screen h2 {
+    color: #556B2F;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+}
+
+#tutorial-screen p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+#tutorial-screen ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto 20px auto;
+    text-align: left;
+    max-width: 500px;
+}
+
+#tutorial-screen li {
+    margin-bottom: 10px;
+    font-size: 1.05em;
+}
+
+#tutorial-screen strong {
+    color: #32CD32;
+}
+
+#close-tutorial-button {
+    margin-top: 30px;
+    padding: 12px 25px;
+    font-size: 1.3em;
+    background-color: #32CD32;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#close-tutorial-button:hover {
+    background-color: #228B22;
+}
+
+/* Language Selection Screen Styles */
+#language-selection-screen {
+    background-color: #E0FFE0; /* Light green background */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    text-align: center;
+    color: #333;
+    z-index: 1000; /* Ensure it's on top */
+    position: fixed; /* Position over other content */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center both horizontally and vertically */
+}
+
+#language-selection-screen h1 {
+    color: #228B22;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+}
+
+#language-selection-screen button {
+    padding: 15px 30px;
+    font-size: 1.5em;
+    margin: 10px;
+    background-color: #32CD32;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#language-selection-screen button:hover {
+    background-color: #228B22;
+}
